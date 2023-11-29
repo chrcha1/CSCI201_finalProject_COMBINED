@@ -1,0 +1,43 @@
+.group-calendar-grid {
+    display: grid;
+    grid-template-columns: 100px repeat(7, 1fr); /* One column for time headers, 7 for days */
+    grid-template-rows: repeat(9, 1fr); /* 9 equal rows for day headers and time slots */
+    width: 100%;
+}
+
+.group-corner-cell {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+}
+
+.group-day-header, .group-time-header, .group-time-slot {
+    border: 1px solid #AFAFAF;
+    text-align: center;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.group-day-header {
+    grid-row: 1 / 2;
+    font-weight: 500;
+    background-color: #d3d3d3;
+}
+
+.group-time-header {
+    grid-column: 1 / 2;
+    font-weight: 500;
+    background-color: #d3d3d3;
+}
+
+.group-time-slot {
+    cursor: default; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.group-time-slot.available {
+    
+}

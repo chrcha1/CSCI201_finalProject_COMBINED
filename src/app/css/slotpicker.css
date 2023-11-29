@@ -1,0 +1,46 @@
+.calendar-grid {
+    display: grid;
+    grid-template-columns: 100px repeat(7, 1fr); /* One column for time headers, 7 for days */
+    grid-template-rows: repeat(9, 1fr); /* 9 equal rows for day headers and time slots */
+    width: 100%;
+}
+
+.corner-cell {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+}
+
+.day-header, .time-header, .time-slot {
+    border: 1px solid #AFAFAF;
+    text-align: center;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.day-header {
+    grid-row: 1 / 2;
+    font-weight: 500;
+    background-color: #d3d3d3;
+}
+
+.time-header {
+    grid-column: 1 / 2;
+    font-weight: 500;
+    background-color: #d3d3d3;
+}
+
+
+.time-slot {
+    cursor: pointer;
+    background-color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.time-slot.selected {
+    background-color: #435A58;
+    color: white;
+}

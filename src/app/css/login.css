@@ -1,0 +1,66 @@
+.main-container {
+    height: 100vh;
+    max-height: 100vh;
+    background: url("../../../public/login_background.png");
+    background-size: cover;
+}
+
+.login-signup-shadow {
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,.1),0 8px 10px -6px rgba(0,0,0,.1);
+}
+
+.login-container {
+    background-color: rgb(232, 241, 241);
+    max-width: 505px;
+    max-height: 508px;
+    font-size: 1.5em;
+    border-radius: 1rem;
+}
+
+.login-headline {
+    font-size: 3rem;
+}
+
+.sign-in {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.sign-in-field,
+.sign-in-field:focus,
+.sign-in-field:active {
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(232, 241, 241);
+    outline: none;
+    width: inherit;
+    font-size: .8em;
+    font-weight: lighter;
+    color: rgb(117, 117, 117);
+}
+
+.login-button,
+.login-button:focus,
+.login-button:active,
+.login-button:hover {
+    background-color: rgb(72, 89, 88);
+    color: white;
+    font-size: .9em;
+    padding: .3em;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+.input-wrapper {
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: .25rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+}
+
+.forgot-password-text {
+    font-size: .8em;
+}
