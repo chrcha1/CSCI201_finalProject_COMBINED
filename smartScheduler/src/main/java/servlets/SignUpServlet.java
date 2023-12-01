@@ -69,7 +69,7 @@ public class SignUpServlet extends HttpServlet {
             	HttpSession session = request.getSession();
             	session.setAttribute("user", username);
                 jsonResponse.addProperty("success", true);
-                jsonResponse.addProperty("redirect", "html/home.html");
+                jsonResponse.addProperty("redirect", "/");
             } else {
             	jsonResponse.addProperty("error", "Invalid username or password.");
             }
