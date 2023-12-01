@@ -106,7 +106,7 @@ const EventPage = () => {
         <div className="text-center pt-5 availability-header">
           <h2>{eventDetails.name}</h2>
           <p>{eventDetails.description}</p>
-          <p>To invite people to this event, direct them to *link*</p>
+          <p>To invite people to this event, direct them to <a href={window.location.href}>this link</a></p>
         </div>
         <div className="availability-container">
           <div className="text-center availability-section">
