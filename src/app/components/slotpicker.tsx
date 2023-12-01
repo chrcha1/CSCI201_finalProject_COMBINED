@@ -14,9 +14,7 @@ const EventCalendar = ({
   const [selectedSlots, setSelectedSlots] = useState(new Set());
 
   const updateAvailability = async () => {
-    const availabilityMatrix = createAvailabilityMatrix(
-      selectedSlots as Set<string>
-    );
+    const availabilityMatrix = createAvailabilityMatrix();
     const payload = {
       userId: userId,
       eventId: eventId,
@@ -39,7 +37,7 @@ const EventCalendar = ({
     }
   };
 
-  const createAvailabilityMatrix = (selectedSlots: Set<string>) => {
+  const createAvailabilityMatrix = () => {
     const dayMapping: { [key: string]: number } = {
       Sun: 0,
       Mon: 1,
@@ -66,14 +64,18 @@ const EventCalendar = ({
       .map(() => Array(24).fill(false));
 
     selectedSlots.forEach((slot) => {
-      const [day, time] = slot.split("-");
-      const dayIndex = dayMapping[day.split(" ")[0]]; // Extract day part and get its index
+      const [monthDay, time] = slot.split("-");
+      const date = new Date(`${monthDay} ${selectedDay.split("-")[0]}`); // Combine with year from selectedday
+      const dayOfWeek = date.getDay(); // Get day of week as number (0=Sunday, 6=Saturday)
+
       const timeIndex = timeMapping[time];
-      if (dayIndex !== undefined && timeIndex !== undefined) {
-        availabilityMatrix[dayIndex][timeIndex] = true;
+      if (dayOfWeek !== undefined && timeIndex !== undefined) {
+        availabilityMatrix[dayOfWeek][timeIndex] = true;
       }
     });
 
+    console.log("Availability Matrix: ");
+    console.log(availabilityMatrix);
     return availabilityMatrix;
   };
 
@@ -116,6 +118,8 @@ const EventCalendar = ({
       } else {
         newSelectedSlots.add(key);
       }
+      console.log("New Selected Slots: ");
+      console.log(newSelectedSlots);
       return newSelectedSlots;
     });
   };
