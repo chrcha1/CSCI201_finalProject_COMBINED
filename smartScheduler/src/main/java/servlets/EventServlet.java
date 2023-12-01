@@ -23,7 +23,7 @@ public class EventServlet extends HttpServlet {
     }
 
     // Fetch Event Details
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
@@ -50,7 +50,7 @@ public class EventServlet extends HttpServlet {
     }
 
     // Create a New Event
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         String createdBy = request.getParameter("createdBy");
