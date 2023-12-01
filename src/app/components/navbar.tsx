@@ -1,7 +1,12 @@
+"use client";
 import '../css/navbar.css'
+import React, { useState, useEffect } from "react";
 
 export default function Navbar() {
-    const domain = `${window.location.protocol}//${window.location.hostname}`;
+    useEffect(() => {
+        domain = `${window.location.protocol}//${window.location.hostname}`;
+    }, []);
+    let domain = ``;
     const port = 8080;
     return (
         <div className={"navbar-main"}>

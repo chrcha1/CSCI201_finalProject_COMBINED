@@ -1,7 +1,6 @@
-'use client'
+"use client";
 
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
 import "../css/events.css";
 import Navbar from "@/app/components/navbar";
 import Slotpicker from "@/app/components/slotpicker";
@@ -16,19 +15,23 @@ interface ParticipantAvailability {
 
 type ParticipantsAvailabilityData = ParticipantAvailability[];
 
-const Page = () => {
+const EventPage = () => {
   const [groupData, setGroupData] = useState({});
   const [eventDetails, setEventDetails] = useState({
     name: "",
     description: "",
     createdBy: "",
   });
-  const router = useRouter();
 
   useEffect(() => {
-    const eventId = `${router.query.eventId}`; // Need to implement slug routing and get event ID from URL
-    fetchEventDetails(eventId);
-    fetchGroupData(eventId);
+    if (typeof window !== 'undefined') {
+      const queryParams = new URLSearchParams(window.location.search);
+      const eventId = queryParams.get("eventId");
+      if (eventId) {
+        fetchEventDetails(eventId);
+        fetchGroupData(eventId);
+      }
+    }
   }, []);
 
   const fetchEventDetails = (eventId: string) => {
@@ -113,4 +116,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default EventPage;
