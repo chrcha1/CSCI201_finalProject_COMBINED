@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "../css/groupavailibility.css";
 
 interface GroupData {
@@ -8,11 +8,18 @@ interface GroupData {
 
 interface GroupAvailabilityProps {
   groupData: GroupData;
+  primaryDate: string;
 }
 
-const GroupAvailability: React.FC<GroupAvailabilityProps> = ({ groupData }) => {
-  let selectedDay = "2023-11-15T08:00:00.000Z"; // demo value
+const GroupAvailability: React.FC<GroupAvailabilityProps> = ({ groupData, primaryDate }) => {
+  const [days, setDays] = useState([]);
 
+  useEffect(() => {
+    if (primaryDate && typeof window !== "undefined") {
+      setDays(calculateDays());
+    }
+  }, [primaryDate]);
+  
   const getMaxUsersCount = () => {
     const maxCounts = Object.values(groupData).map((users) => users.length);
     return maxCounts.length > 0 ? Math.max(...maxCounts) : 0;
@@ -39,8 +46,8 @@ const GroupAvailability: React.FC<GroupAvailabilityProps> = ({ groupData }) => {
     return { backgroundColor };
   };
 
-  function calculateDays(selectedDay: any) {
-    let selectedDate = new Date(selectedDay);
+  function calculateDays() {
+    let selectedDate = new Date(primaryDate);
     const abbreviatedMonths = [
       "Jan",
       "Feb",
@@ -65,11 +72,9 @@ const GroupAvailability: React.FC<GroupAvailabilityProps> = ({ groupData }) => {
       let monthDay = `${month} ${day}`;
       weekDays.push(monthDay);
     }
+    console.log(weekDays)
     return weekDays;
   }
-
-  let days = calculateDays(selectedDay);
-  // console.log(days);
 
   const renderCalendarGrid = () => {
     // console.log(days);

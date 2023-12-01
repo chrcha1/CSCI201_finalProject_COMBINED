@@ -130,7 +130,7 @@ const EventPage = () => {
           <div className="text-center availability-section">
             <h3>Group Availability</h3>
             <p>Mouseover to see who is available</p>
-            <GroupAvailability groupData={groupData} />
+            <GroupAvailability groupData={groupData} primaryDate={eventDetails.primaryDate} />
           </div>
         </div>
       </div>
