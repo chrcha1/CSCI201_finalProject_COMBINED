@@ -17,11 +17,11 @@ import util.ValidationUtil;
 
 import com.google.gson.JsonObject;
 
-@WebServlet("/LogoutServlet")
-public class LogoutServlet extends HttpServlet {
+@WebServlet("/SignUpServlet")
+public class SignUpServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    public LogoutServlet() {
+    public SignUpServlet() {
         super();
     }
 
@@ -33,9 +33,9 @@ public class LogoutServlet extends HttpServlet {
     	response.setContentType("application/json");
     	response.setCharacterEncoding("UTF-8");
 		
-		String username = request.getParameter("username");
+    	String username = request.getParameter("username");
         String password = request.getParameter("password");
-        String confirmPassword = request.getParameter ("confirmPassword")
+        String confirmPassword = request.getParameter("confirmPassword");
         
         JsonObject jsonResponse = new JsonObject();
         
@@ -44,30 +44,34 @@ public class LogoutServlet extends HttpServlet {
             return;
         }
         if ( !password.equals (confirmPassword)) {
-            jsonResponse.addProperty("error", "password and confirm password do not match");
+            jsonResponse.addProperty("error", "Password and confirm password do not match.");
             return;
         }
         
         try {
             Connection conn = DatabaseUtil.getConnection();
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM users WHERE username = ? AND password = ?");
+            
+            PreparedStatement checkUsername = conn.prepareStatement("SELECT * FROM users WHERE username = ?");
+            checkUsername.setString(1, username);
+            ResultSet UsernameRs = checkUsername.executeQuery();
+            if (UsernameRs.next()) {
+            	jsonResponse.addProperty("error", "Username already exists.");
+                return;
+            }
+            
+            // Insert new user
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO users (username, password) VALUES (?, ?)");
             ps.setString(1, username);
             ps.setString(2, password);
-            ResultSet rs = ps.executeQuery();
+            int result = ps.executeUpdate();
 
-            if (rs.next()) {
-                jsonResponse.addProperty("error", "username and password already exist.");
-                
-            } 
-            ps = conn.prepareStatement("INSERT INTO Users (name, password) VALUES (?, ?);");
-            ps.setString (1, username);
-            ps.setString (2, password);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                HttpSession session = request.getSession();
-                session.setAttribute("user", username);
+            if (result > 0) {
+            	HttpSession session = request.getSession();
+            	session.setAttribute("user", username);
                 jsonResponse.addProperty("success", true);
                 jsonResponse.addProperty("redirect", "html/home.html");
+            } else {
+            	jsonResponse.addProperty("error", "Invalid username or password.");
             }
         } catch (SQLException e) {
         	jsonResponse.addProperty("error", "Database connection problem: " + e.getMessage());
@@ -76,3 +80,5 @@ public class LogoutServlet extends HttpServlet {
         }
     }
 }
+
+
