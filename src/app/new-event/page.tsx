@@ -63,61 +63,13 @@ export default function newEvent() {
           >
             <div
               className={
-                "col-md-6 text-center pt-5 questions d-flex align-items-center justify-content-center flex-column"
+                "col-12 text-center pt-2 questions d-flex align-items-center justify-content-center flex-column"
               }
             >
               <div className={"mb-5"}>What date will work?</div>
               <Datepicker />
             </div>
-            <div
-              className={
-                "col-md-6 text-center pt-5 questions d-flex align-items-center justify-content-center flex-column"
-              }
-              style={{
-                color: "#090000",
-                fontSize: "24px",
-                fontFamily: "Montserrat",
-                fontWeight: 400,
-              }}
-            >
-              <div className={"mb-5"}>What time range will work?</div>
-              <div className={"select-container"}>
-                <select
-                  className={"form-select new-event-select mb-5"}
-                  style={{
-                    fontSize: "20px",
-                    padding: "10px",
-                    width: "20vw",
-                  }}
-                  defaultValue="default"
-                >
-                  <option value="default">No Earlier Than</option>
-                  {timeOptions.map((time, index) => (
-                    <option key={index} value={time}>
-                      {time}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className={"select-container mb-5"}>
-                <select
-                  className={"form-select new-event-select"}
-                  style={{
-                    fontSize: "20px",
-                    padding: "10px",
-                    width: "20vw",
-                  }}
-                  defaultValue="default"
-                >
-                  <option value="default">No Later Than</option>
-                  {timeOptions.map((time, index) => (
-                    <option key={index} value={time}>
-                      {time}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className={"new-event-create-event-button-wrapper"}>
+              <div className={"new-event-create-event-button-wrapper row pt-5 w-50"}>
                 <button
                   className={"new-event-create-event-button px-5 py-1 mb-5"}
                   style={{
@@ -128,7 +80,6 @@ export default function newEvent() {
                   CREATE EVENT
                 </button>
               </div>
-            </div>
           </div>
         </div>
       </div>
