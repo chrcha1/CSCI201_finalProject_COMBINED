@@ -28,9 +28,10 @@ public class UserAvailability extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
     	response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     	response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    	response.setHeader("Access-Control-Allow-Credentials", "true");
 
         JsonObject jsonResponse = new JsonObject();
         String userId = request.getParameter("userId");
@@ -61,7 +62,7 @@ public class UserAvailability extends HttpServlet {
 
     // Update user availability
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	response.setHeader("Access-Control-Allow-Origin", "*");
+    	response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
     	response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     	response.setHeader("Access-Control-Allow-Headers", "Content-Type");
     	

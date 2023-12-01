@@ -19,23 +19,28 @@ export default function Signup() {
     try {
       const domain = `${window.location.protocol}//${window.location.hostname}`;
       const port = 8080;
-      const response = await fetch(`${domain}:${port}/smartScheduler/SignUpServlet`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `username=${encodeURIComponent(
-          username
-        )}&password=${encodeURIComponent(
-          password
-        )}&confirmPassword=${encodeURIComponent(confirmPassword)}`,
-      });
+      const response = await fetch(
+        `${domain}:${port}/smartScheduler/SignUpServlet`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `username=${encodeURIComponent(
+            username
+          )}&password=${encodeURIComponent(
+            password
+          )}&confirmPassword=${encodeURIComponent(confirmPassword)}`,
+        }
+      );
 
       const data = await response.json();
 
       if (data.error) {
         setErrorMessage(data.error);
       } else if (data.success) {
+        localStorage.setItem('userId', data.userId);
         window.location.href = data.redirect;
       }
     } catch (error) {

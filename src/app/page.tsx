@@ -13,25 +13,30 @@ export default function Login() {
 
     // Sending a POST request to the login servlet
     try {
-      console.log(username)
-      console.log(password)
+      console.log(username);
+      console.log(password);
       const domain = `${window.location.protocol}//${window.location.hostname}`;
       const port = 8080;
-      const response = await fetch(`${domain}:${port}/smartScheduler/LoginServlet`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: `username=${encodeURIComponent(
-          username
-        )}&password=${encodeURIComponent(password)}`,
-      });
+      const response = await fetch(
+        `${domain}:${port}/smartScheduler/LoginServlet`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: `username=${encodeURIComponent(
+            username
+          )}&password=${encodeURIComponent(password)}`,
+        }
+      );
 
       const data = await response.json();
 
       if (data.error) {
         setErrorMessage(data.error);
       } else if (data.success) {
+        localStorage.setItem('userId', data.userId);
         window.location.href = data.redirect;
       }
     } catch (error) {

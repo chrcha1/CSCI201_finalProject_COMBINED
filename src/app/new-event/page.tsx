@@ -1,32 +1,43 @@
 "use client";
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "@/app/components/navbar";
 import Datepicker from "@/app/components/datepicker";
-import DateSelectionContext from "@/app/components/dateselectioncontext";
 
 import "../css/events.css";
 
 export default function newEvent() {
-  const { selectedDates } = useContext(DateSelectionContext);
-  const [eventName, setEventName] = useState("New Event Name");
+  const [eventName, setEventName] = useState("");
+  const [eventDescription, setEventDescription] = useState("");
+  const [createdBy, setCreatedBy] = useState("");
+
+  useEffect(() => {
+    // Access localStorage after component mounts to ensure it's client-side
+    const userId = localStorage.getItem("userId");
+    setCreatedBy(userId || '');
+  }, []);
 
   const handleEventCreation = async (event: any) => {
     event.preventDefault();
 
+    console.log("Creating event...");
     try {
-      let domain = window.location.origin;
-      let port = 8080;
-      const response = await fetch(`${domain}:${port}/EventCreationServlet`, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `name=${encodeURIComponent(
-          eventName
-        )}&description=${encodeURIComponent(
-          JSON.stringify(selectedDates.values().next().value)
-        )}`,
-      });
+      const domain = `${window.location.protocol}//${window.location.hostname}`;
+      const port = 8080;
+      const response = await fetch(
+        `${domain}:${port}/smartScheduler/EventServlet`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: `name=${encodeURIComponent(
+            eventName
+          )}&description=${encodeURIComponent(
+            eventDescription
+          )}&createdBy=${encodeURIComponent(createdBy || '')}`,
+        }
+      );
 
       const data = await response.text();
+      console.log("Response: " + data);
 
       console.log(data); // TODO: handle the response and display a success / error message for the user
     } catch (error) {
@@ -79,6 +90,20 @@ export default function newEvent() {
                   value={eventName}
                   onChange={(e) => setEventName(e.target.value)}
                   placeholder="New Event Name"
+                />
+                <input
+                  type="text"
+                  className="new-event-name text-center mt-5 p-3 px-5"
+                  style={{
+                    color: "#090000",
+                    fontSize: "24px",
+                    fontFamily: "Montserrat",
+                    fontWeight: 600,
+                    backgroundColor: "rgb(232, 241, 241)",
+                  }}
+                  value={eventDescription}
+                  onChange={(e) => setEventDescription(e.target.value)}
+                  placeholder="New Event Description"
                 />
               </div>
             </div>

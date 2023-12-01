@@ -10,7 +10,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import com.google.gson.JsonObject;
 import util.DatabaseUtil;
@@ -27,9 +26,10 @@ public class EventServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
     	response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     	response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    	response.setHeader("Access-Control-Allow-Credentials", "true");
 
         String eventId = request.getParameter("eventId");
 
@@ -55,14 +55,13 @@ public class EventServlet extends HttpServlet {
 
     // Create a New Event
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	response.setHeader("Access-Control-Allow-Origin", "*");
+    	response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
     	response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     	response.setHeader("Access-Control-Allow-Headers", "Content-Type");
     	
-    	HttpSession session = request.getSession(false);
         String name = request.getParameter("name");
         String description = request.getParameter("description");
-        String createdBy = session.getAttribute("userId").toString();
+        String createdBy = request.getParameter("createdBy");
 
         try (Connection conn = DatabaseUtil.getConnection();
              PreparedStatement ps = conn.prepareStatement("INSERT INTO events (name, description, created_by) VALUES (?, ?, ?)")) {

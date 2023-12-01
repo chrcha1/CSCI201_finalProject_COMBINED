@@ -32,14 +32,13 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	response.setContentType("application/json");
     	response.setCharacterEncoding("UTF-8");
-    	response.setHeader("Access-Control-Allow-Origin", "*");
+    	response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
     	response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     	response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    	response.setHeader("Access-Control-Allow-Credentials", "true");
 		
 		String username = request.getParameter("username");
         String password = request.getParameter("password");
-        System.out.println(username);
-        System.out.println(password);
         
         JsonObject jsonResponse = new JsonObject();
         
@@ -63,6 +62,7 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("userId", userId);
 
                 jsonResponse.addProperty("success", true);
+                jsonResponse.addProperty("userId", userId);
                 jsonResponse.addProperty("redirect", "/new-event");
                 System.out.println("Successful Login");
                 
@@ -85,8 +85,10 @@ public class LoginServlet extends HttpServlet {
 	}
 
 	private void setAccessControlHeaders(HttpServletResponse resp) {
-	    resp.setHeader("Access-Control-Allow-Origin", "*");
+		resp.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
 	    resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 	    resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
+	    resp.setHeader("Access-Control-Allow-Credentials", "true");
 	}
+
 }
