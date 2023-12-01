@@ -13,7 +13,7 @@ export default function Login() {
 
     // Sending a POST request to the login servlet
     try {
-      const response = await fetch("/LoginServlet", {
+      const response = await fetch("http://127.0.0.1:8080/smartScheduler/LoginServlet", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -17,7 +17,7 @@ export default function Signup() {
     }
 
     try {
-      const response = await fetch("/SignUpServlet", {
+      const response = await fetch("http://127.0.0.1:8080/smartScheduler/SignUpServlet", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
