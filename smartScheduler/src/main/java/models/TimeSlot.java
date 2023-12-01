@@ -1,4 +1,4 @@
-package smartScheduler;
+package models;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;

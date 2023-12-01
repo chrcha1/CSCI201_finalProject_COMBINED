@@ -2,6 +2,9 @@ package smartScheduler;
 
 import java.util.List;
 
+import models.Event;
+import models.User;
+
 public class SchedulerTester {
 
     public static void main(String[] args) {
@@ -13,8 +16,8 @@ public class SchedulerTester {
         User user5 = new User("5", "Eve", "hashedPwd5");
 
         // Create more events
-        Event event1 = new Event("E1", "Team Meeting", "Weekly Meeting");
-        Event event2 = new Event("E2", "Project Discussion", "Discuss project details");
+        Event event1 = new Event("E1", "Team Meeting", "Weekly Meeting", "1");
+        Event event2 = new Event("E2", "Project Discussion", "Discuss project details", "2");
 
         // Add users to events
         event1.addParticipant(user1);
