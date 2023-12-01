@@ -20,7 +20,7 @@ import com.google.gson.JsonObject;
 @WebServlet("/SignUpServlet")
 public class SignUpServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
+
     public SignUpServlet() {
         super();
     }
@@ -36,13 +36,13 @@ public class SignUpServlet extends HttpServlet {
     	response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     	response.setHeader("Access-Control-Allow-Headers", "Content-Type");
     	response.setHeader("Access-Control-Allow-Credentials", "true");
-		
+
     	String username = request.getParameter("username");
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
-        
+
         JsonObject jsonResponse = new JsonObject();
-        
+
         if (ValidationUtil.isNullOrEmpty(username) || ValidationUtil.isNullOrEmpty(password) || ValidationUtil.isNullOrEmpty(confirmPassword)) {
             jsonResponse.addProperty("error", "Username, password, or confirm password cannot be empty.");
             return;
@@ -51,10 +51,10 @@ public class SignUpServlet extends HttpServlet {
             jsonResponse.addProperty("error", "Password and confirm password do not match.");
             return;
         }
-        
+
         try {
             Connection conn = DatabaseUtil.getConnection();
-            
+
             PreparedStatement checkUsername = conn.prepareStatement("SELECT * FROM users WHERE username = ?");
             checkUsername.setString(1, username);
             ResultSet UsernameRs = checkUsername.executeQuery();
@@ -62,7 +62,7 @@ public class SignUpServlet extends HttpServlet {
             	jsonResponse.addProperty("error", "Username already exists.");
                 return;
             }
-            
+
             // Insert new user
             PreparedStatement ps = conn.prepareStatement("INSERT INTO users (username, password) VALUES (?, ?)");
             ps.setString(1, username);
@@ -92,7 +92,7 @@ public class SignUpServlet extends HttpServlet {
         	response.getWriter().write(jsonResponse.toString());
         }
     }
-	
+
 	@Override
 	protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 	    setAccessControlHeaders(resp);

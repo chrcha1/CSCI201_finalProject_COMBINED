@@ -99,11 +99,18 @@ export default function DatepickerComponent( props : any) {
       const newSelectedDates = new Set<string>();
       const dateString = date.toISOString();
       newSelectedDates.add(dateString);
+      setSelectedDatesLocal(newSelectedDates);
       console.log(newSelectedDates);
-      props.onSelectedDatesChange(newSelectedDates);
+      // props.onSelectedDatesChange(newSelectedDates);
       return newSelectedDates;
     });
   };
+
+  useEffect(() => {
+    if (selectedDatesLocal.size > 0) {
+      props.onSelectedDatesChange(selectedDatesLocal);
+    }
+  }, [selectedDatesLocal, props.onSelectedDatesChange]);
 
   // Update the global selected dates when local state changes
   useEffect(() => {

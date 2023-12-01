@@ -10,6 +10,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.UUID;
 
 import com.google.gson.JsonObject;
 import util.DatabaseUtil;
@@ -55,26 +56,36 @@ public class EventServlet extends HttpServlet {
 
     // Create a New Event
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-    	response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    	response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    	
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+
         String name = request.getParameter("name");
         String description = request.getParameter("description");
         String createdBy = request.getParameter("createdBy");
+        String primary_date = request.getParameter("primary_date");
 
         try (Connection conn = DatabaseUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement("INSERT INTO events (name, description, created_by) VALUES (?, ?, ?)")) {
+             PreparedStatement ps = conn.prepareStatement("INSERT INTO events (id, name, description, created_by, primary_date) VALUES (?, ?, ?, ?, ?)",
+                     PreparedStatement.RETURN_GENERATED_KEYS)) {
 
-            ps.setString(1, name);
-            ps.setString(2, description);
-            ps.setString(3, createdBy);
+            String newEventId = UUID.randomUUID().toString();
+            ps.setString(1, newEventId);
+            ps.setString(2, name);
+            ps.setString(3, description);
+            ps.setString(4, createdBy);
+            ps.setString(5, primary_date);
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected > 0) {
-                response.getWriter().write("Event created successfully.");
+                JsonObject jsonResponse = new JsonObject();
+                jsonResponse.addProperty("message", "Event created successfully.");
+                jsonResponse.addProperty("eventId", newEventId);
+
+                response.getWriter().write(jsonResponse.toString());
             } else {
-                response.getWriter().write("Failed to create event.");
+                throw new SQLException("Creating event failed, no ID obtained.");
             }
         } catch (SQLException e) {
             throw new ServletException("Database connection problem", e);

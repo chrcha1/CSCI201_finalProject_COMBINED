@@ -9,12 +9,18 @@ export default function newEvent() {
   const [eventName, setEventName] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [createdBy, setCreatedBy] = useState("");
+  const [selectedDates, setSelectedDates] = useState("");
+  const [url, setUrl] = useState("");
 
   useEffect(() => {
     // Access localStorage after component mounts to ensure it's client-side
     const userId = localStorage.getItem("userId");
     setCreatedBy(userId || '');
   }, []);
+
+  const onSelectedDatesChange = (newSelectedDates : any) => {
+      setSelectedDates(newSelectedDates.values().next().value);
+  }
 
   const handleEventCreation = async (event: any) => {
     event.preventDefault();
@@ -23,6 +29,8 @@ export default function newEvent() {
     try {
       const domain = `${window.location.protocol}//${window.location.hostname}`;
       const port = 8080;
+      console.log(createdBy);
+      console.log(selectedDates);
       const response = await fetch(
         `${domain}:${port}/smartScheduler/EventServlet`,
         {
@@ -32,14 +40,21 @@ export default function newEvent() {
             eventName
           )}&description=${encodeURIComponent(
             eventDescription
-          )}&createdBy=${encodeURIComponent(createdBy || '')}`,
+          )}&createdBy=${encodeURIComponent(createdBy || '')}
+          &primary_date=${encodeURIComponent(selectedDates)}`,
         }
       );
 
-      const data = await response.text();
+      const data = await response.json();
       console.log("Response: " + data);
 
-      console.log(data); // TODO: handle the response and display a success / error message for the user
+      if (data.message === "Event created successfully.") {
+          console.log(data.eventId);
+          let eventId = data.eventId;
+          setUrl("localhost:3000/event?eventId=" + eventId);
+          console.log(url);
+      }
+
     } catch (error) {
       console.log("Failed to create event: ", error);
     }
@@ -72,7 +87,7 @@ export default function newEvent() {
                 "col-5 d-flex align-items-center justify-content-center"
               }
             >
-              <div
+                {!url && <div
                 className={
                   "col-5 d-flex align-items-center justify-content-center"
                 }
@@ -105,7 +120,7 @@ export default function newEvent() {
                   onChange={(e) => setEventDescription(e.target.value)}
                   placeholder="New Event Description"
                 />
-              </div>
+              </div> }
             </div>
           </div>
           <div
@@ -124,23 +139,38 @@ export default function newEvent() {
                 "col-12 text-center pt-2 questions d-flex align-items-center justify-content-center flex-column"
               }
             >
-              <div className={"mb-5"}>What date will work?</div>
-              <Datepicker />
+                { url && (
+                    <div className={"mb-3"}>
+                        <div className={"mb-3"}>
+                            Event Successfully Created!
+                        </div>
+                        <div className={"mb-2"}>Schedule your group availability <a href={url}>here</a>!</div>
+                    </div>
+                )}
+              { !url && (
+                  <div>
+                    <div className={"mb-5"}>What date will work?</div>
+                  <Datepicker onSelectedDatesChange={onSelectedDatesChange} />
+                  </div>
+              )}
             </div>
-            <div
-              className={"new-event-create-event-button-wrapper row pt-5 w-50"}
-            >
-              <button
-                className={"new-event-create-event-button px-5 py-1 mb-5"}
-                style={{
-                  fontWeight: 400,
-                  color: "435A58",
-                }}
-                type="submit"
-              >
-                CREATE EVENT
-              </button>
-            </div>
+            { !url && (
+                <div
+                    className={"new-event-create-event-button-wrapper row pt-5 w-50"}
+                >
+                  <button
+                      className={"new-event-create-event-button px-5 py-1 mb-5"}
+                      style={{
+                        fontWeight: 400,
+                        color: "435A58",
+                      }}
+                      type="submit"
+                  >
+                    CREATE EVENT
+                  </button>
+                </div>
+            )}
+
           </div>
         </form>
       </div>
