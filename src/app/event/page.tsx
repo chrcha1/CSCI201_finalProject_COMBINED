@@ -22,22 +22,26 @@ const EventPage = () => {
     description: "",
     createdBy: "",
   });
+  const [eventId, setEventId] = useState("");
+  const [userId, setUserId] = useState("");
+  const [url, setUrl] = useState("");
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       const queryParams = new URLSearchParams(window.location.search);
-      const eventId = queryParams.get("eventId");
+      setEventId(queryParams.get("eventId") || "");
+      setUserId(localStorage.getItem("userId") || "");
       const domain = `${window.location.protocol}//${window.location.hostname}`;
       const port = 8080;
-      const url = `${domain}:${port}/smartScheduler/`;
+      setUrl(`${domain}:${port}/smartScheduler`);
       if (eventId) {
-        fetchEventDetails(eventId, url);
-        fetchGroupData(eventId, url);
+        fetchEventDetails(eventId);
+        fetchGroupData(eventId);
       }
     }
   }, []);
 
-  const fetchEventDetails = (eventId: string, url: string) => {
+  const fetchEventDetails = (eventId: string) => {
     fetch(`${url}/EventServlet?eventId=${eventId}`)
       .then((response) => response.json())
       .then((data) => {
@@ -52,7 +56,7 @@ const EventPage = () => {
       });
   };
 
-  const fetchGroupData = (eventId: string, url: string) => {
+  const fetchGroupData = (eventId: string) => {
     fetch(`${url}/GetCombinedAvailability?eventId=${eventId}`)
       .then((response) => response.json())
       .then((data) => {
@@ -106,7 +110,7 @@ const EventPage = () => {
           <div className="text-center availability-section">
             <h3>Your Availability</h3>
             <p>Click time slots to select your availability</p>
-            <Slotpicker />
+            <Slotpicker userId={userId} eventId={eventId} url={url} />
           </div>
           <div className="text-center availability-section">
             <h3>Group Availability</h3>
