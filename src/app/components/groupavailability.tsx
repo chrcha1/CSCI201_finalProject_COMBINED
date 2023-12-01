@@ -3,7 +3,13 @@ import React, { useEffect, useState } from "react";
 import "../css/groupavailibility.css";
 
 interface GroupData {
-  [key: string]: string[];
+  [key: string]: TimeSlotData;
+}
+
+interface TimeSlotData {
+  count: number;
+  users: string[];
+  percentage: number;
 }
 
 interface GroupAvailabilityProps {
@@ -11,35 +17,36 @@ interface GroupAvailabilityProps {
   primaryDate: string;
 }
 
-const GroupAvailability: React.FC<GroupAvailabilityProps> = ({ groupData, primaryDate }) => {
+const GroupAvailability: React.FC<GroupAvailabilityProps> = ({
+  groupData,
+  primaryDate,
+}) => {
   const [days, setDays] = useState([]);
+  console.log(groupData["Fri-09:00"]);
 
   useEffect(() => {
     if (primaryDate && typeof window !== "undefined") {
       setDays(calculateDays());
     }
   }, [primaryDate]);
-  
-  const getMaxUsersCount = () => {
-    const maxCounts = Object.values(groupData).map((users) => users.length);
-    return maxCounts.length > 0 ? Math.max(...maxCounts) : 0;
-  };
 
-  console.log(`Max Count: ${getMaxUsersCount()}`);
+  useEffect(() => {
+    if (groupData && typeof window !== "undefined") {
+      renderCalendarGrid();
+    }
+  }, [groupData]);
 
   //making it red for testing
-  const getGradientStyle = (userCount: number, maxCount: number) => {
+  const getGradientStyle = (percentage: number) => {
     const minIntensity = 0.0; // Adjust this value as needed
 
     const redComponent = 67; // R component of the color #435A58
     const greenComponent = 90; // G component of the color #435A58
     const blueComponent = 88; // B component of the color #435A58
 
-    const intensity =
-      maxCount > 0 ? (userCount / maxCount) * 0.8 + minIntensity : 0.0;
-  
+    const intensity = percentage * 0.01 * 0.8 + minIntensity;
 
-    console.log(`Intensity: ${(userCount / maxCount) * 0.8 + minIntensity}`);
+    // console.log(`Intensity: ${(userCount / maxCount)}`);
 
     const backgroundColor = `rgba(
           ${redComponent},
@@ -77,12 +84,48 @@ const GroupAvailability: React.FC<GroupAvailabilityProps> = ({ groupData, primar
       let monthDay = `${month} ${day}`;
       weekDays.push(monthDay);
     }
-    console.log(weekDays)
+    console.log(weekDays);
     return weekDays;
   }
 
   const renderCalendarGrid = () => {
-    // console.log(days);
+    const year = new Date(primaryDate).getFullYear();
+
+    const dateToDayOfWeek = (dateString: string, year: number) => {
+      const monthDay = dateString.split(" "); // ["Dec", "31"]
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      const monthIndex = months.indexOf(monthDay[0]);
+      const day = parseInt(monthDay[1], 10);
+
+      const date = new Date(year, monthIndex, day);
+      const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      return daysOfWeek[date.getDay()];
+    };
+
+    const convertTo24HourFormat = (time: string) => {
+      const [hours, minutesPart] = time.split(":");
+      let [minutes, modifier] = minutesPart.split(" ");
+      let hour = parseInt(hours, 10);
+
+      if (modifier === "PM" && hour < 12) hour += 12;
+      if (modifier === "AM" && hour === 12) hour = 0;
+
+      return `${hour < 10 ? "0" + hour : hour}:${minutes}`;
+    };
+
     const times = [
       "9:00 AM",
       "10:00 AM",
@@ -107,23 +150,27 @@ const GroupAvailability: React.FC<GroupAvailabilityProps> = ({ groupData, primar
           <React.Fragment key={time}>
             <div className="group-time-header">{time}</div>
             {days.map((day) => {
-              const key = `${day}-${time}`;
-              const userCount = groupData[key] ? groupData[key].length : 0;
-              const maxCount = getMaxUsersCount(); // Calculate max count for each time slot
-              const gradientStyle = getGradientStyle(userCount, maxCount);
+              const dayOfWeek = dateToDayOfWeek(day, year);
+              const formattedTime = convertTo24HourFormat(time);
+              const key = `${dayOfWeek}-${formattedTime}`;
+              const timeSlotData = groupData[key] || {
+                users: [],
+                percentage: 0,
+              };
+              const gradientStyle = getGradientStyle(timeSlotData.percentage);
 
               //debug
-              //console.log(`Time Slot: ${key}, User Count: ${userCount}, Max Count: ${maxCount}`);
+              // console.log(`Time Slot: ${key}, User Count: ${userCount}, Max Count: ${maxCount}`);
 
               return (
                 <div
                   key={key}
                   className={`group-time-slot ${
-                    userCount > 0 ? "available" : ""
+                    timeSlotData?.users.length > 0 ? "available" : ""
                   }`}
                   style={gradientStyle}
                   title={`Available: ${
-                    groupData[key] ? groupData[key].join(", ") : "None"
+                    timeSlotData?.users.join(", ") || "None"
                   }`}
                 >
                   &nbsp;

@@ -88,7 +88,11 @@ const EventPage = () => {
       dayData.forEach((hourData, hourIndex) => {
         const hourFormatted = hourIndex < 10 ? `0${hourIndex}:00` : `${hourIndex}:00`;
         const key = `${days[dayIndex]}-${hourFormatted}`;
-        formatted[key] = hourData.users;
+        formatted[key] = {
+          count: hourData.count,
+          users: hourData.users,
+          percentage: hourData.percentage
+        };
       });
     });
   
