@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 import "../css/events.css";
 import Navbar from "@/app/components/navbar";
 import Slotpicker from "@/app/components/slotpicker";
@@ -14,21 +14,13 @@ interface ParticipantAvailability {
 
 type ParticipantsAvailabilityData = ParticipantAvailability[];
 
-const sampleGroupData = {
-  "Mon-9:00 AM": ["Alice", "Bob"],
-  "Mon-10:00 AM": ["Alice", "Charlie"],
-  "Tue-9:00 AM": ["Bob", "Charlie", "Dave"],
-  "Tue-11:00 AM": ["Eve", "Alice"],
-  "Wed-12:00 PM": ["Charlie"],
-  "Thu-2:00 PM": ["Bob", "Eve"],
-  "Fri-1:00 PM": ["Alice", "Dave", "Eve"],
-  "Sat-3:00 PM": ["Charlie", "Dave"],
-  "Sun-4:00 PM": ["Eve"],
-};
-
 const Page = () => {
   const [groupData, setGroupData] = useState({});
-  const [eventDetails, setEventDetails] = useState({ name: "", description: "", createdBy: "" });
+  const [eventDetails, setEventDetails] = useState({
+    name: "",
+    description: "",
+    createdBy: "",
+  });
   const router = useRouter();
 
   useEffect(() => {
