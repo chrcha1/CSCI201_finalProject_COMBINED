@@ -89,8 +89,9 @@ export default function newEvent() {
                     padding: "10px",
                     width: "20vw",
                   }}
+                  defaultValue="default"
                 >
-                  <option selected>No Earlier Than</option>
+                  <option value="default">No Earlier Than</option>
                   {timeOptions.map((time, index) => (
                     <option key={index} value={time}>
                       {time}
@@ -106,8 +107,9 @@ export default function newEvent() {
                     padding: "10px",
                     width: "20vw",
                   }}
+                  defaultValue="default"
                 >
-                  <option selected>No Later Than</option>
+                  <option value="default">No Later Than</option>
                   {timeOptions.map((time, index) => (
                     <option key={index} value={time}>
                       {time}
