@@ -7,11 +7,13 @@ const EventCalendar = ({
   eventId,
   url,
   primaryDate,
+  userAvailability
 }: {
   userId: string;
   eventId: string;
   url: string;
   primaryDate: string;
+  userAvailability: [][];
 }) => {
   const [selectedSlots, setSelectedSlots] = useState(new Set());
   const [days, setDays] = useState([]);
@@ -21,6 +23,36 @@ const EventCalendar = ({
       setDays(calculateDays());
     }
   }, [primaryDate]);
+
+  useEffect(() => {
+    if (userAvailability && typeof window !== "undefined") {
+      console.log("User Availability: ", userAvailability)
+      updateSelectedSlotsFromAvailability(userAvailability)
+    }
+  }, [userAvailability]);
+
+  const updateSelectedSlotsFromAvailability = (availabilityMatrix: any) => {
+    const newSelectedSlots = new Set();
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    // Updated times array to use 24-hour format
+    const times = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+  
+    console.log(availabilityMatrix.length);
+    for (let dayIndex = 0; dayIndex < Math.min(availabilityMatrix.length, 7); dayIndex++) {
+      for (let hourIndex = 9; hourIndex <= 17; hourIndex++) {
+        if (availabilityMatrix[dayIndex][hourIndex]) {
+          const day = days[dayIndex];
+          const time = times[hourIndex - 9]; // Directly use 24-hour format time
+          console.log(`Adding ${day}-${time}`);
+          newSelectedSlots.add(`${day}-${time}`);
+        }
+      }
+    }
+  
+    setSelectedSlots(newSelectedSlots);
+    console.log("New Selected Slots: ");
+    console.log(newSelectedSlots);
+  };
 
   const updateAvailability = async () => {
     const availabilityMatrix = createAvailabilityMatrix();
@@ -135,6 +167,43 @@ const EventCalendar = ({
   };
 
   const renderCalendarGrid = () => {
+    const year = new Date(primaryDate).getFullYear();
+
+    const dateToDayOfWeek = (dateString: string, year: number) => {
+      const monthDay = dateString.split(" "); // ["Dec", "31"]
+      const months = [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ];
+      const monthIndex = months.indexOf(monthDay[0]);
+      const day = parseInt(monthDay[1], 10);
+
+      const date = new Date(year, monthIndex, day);
+      const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      return daysOfWeek[date.getDay()];
+    };
+
+    const convertTo24HourFormat = (time: string) => {
+      const [hours, minutesPart] = time.split(":");
+      let [minutes, modifier] = minutesPart.split(" ");
+      let hour = parseInt(hours, 10);
+
+      if (modifier === "PM" && hour < 12) hour += 12;
+      if (modifier === "AM" && hour === 12) hour = 0;
+
+      return `${hour < 10 ? "0" + hour : hour}:${minutes}`;
+    };
+    
     const times = [
       "9:00 AM",
       "10:00 AM",
@@ -159,7 +228,11 @@ const EventCalendar = ({
             <React.Fragment key={time}>
               <div className="time-header">{time}</div>
               {days.map((day) => {
-                const isSelected = selectedSlots.has(`${day}-${time}`);
+                const dayOfWeek = dateToDayOfWeek(day, year);
+                const formattedTime = convertTo24HourFormat(time);
+                const key = `${dayOfWeek}-${formattedTime}`;
+                console.log(`Key: ${key}`)
+                const isSelected = selectedSlots.has(key);
                 return (
                   <div
                     key={`${day}-${time}`}

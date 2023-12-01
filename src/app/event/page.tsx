@@ -6,17 +6,9 @@ import Navbar from "@/app/components/navbar";
 import Slotpicker from "@/app/components/slotpicker";
 import GroupAvailability from "@/app/components/groupavailability";
 
-type AvailabilityMatrix = boolean[][]; // A 7x24 matrix of boolean values
-
-interface ParticipantAvailability {
-  username: string;
-  availability: AvailabilityMatrix;
-}
-
-type ParticipantsAvailabilityData = ParticipantAvailability[];
-
 const EventPage = () => {
   const [groupData, setGroupData] = useState({});
+  const [userAvailability, setUserAvailability] = useState({});
   const [eventDetails, setEventDetails] = useState({
     name: "",
     description: "",
@@ -46,12 +38,18 @@ const EventPage = () => {
     }
   }, [eventId]);
 
+  useEffect(() => {
+    if (userId && eventId) {
+      fetchUserAvailability(userId, eventId);
+    }
+  }, [userId, eventId]);
+
   const fetchEventDetails = (eventId: string) => {
     fetch(`${url}/EventServlet?eventId=${eventId}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log("Event details: ");
-        console.log(data);
+        // console.log("Event details: ");
+        // console.log(data);
         setEventDetails({
           name: data.name || "Unnamed Event",
           description: data.description || "No description provided.",
@@ -68,11 +66,11 @@ const EventPage = () => {
     fetch(`${url}/GetCombinedAvailability?eventId=${eventId}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log("Raw group data: ");
-        console.log(data);
+        // console.log("Raw group data: ");
+        // console.log(data);
         const formattedData = formatGroupData(data);
-        console.log("Group data: ");
-        console.log(formattedData);
+        // console.log("Group data: ");
+        // console.log(formattedData);
         setGroupData(formattedData);
       })
       .catch((error) => {
@@ -80,22 +78,39 @@ const EventPage = () => {
       });
   };
 
+  const fetchUserAvailability = (userId: string, eventId: string) => {
+    fetch(`${url}/UserAvailability?userId=${userId}&eventId=${eventId}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("User availability: ", data);
+        if (data.status === 200) {
+          setUserAvailability(JSON.parse(data.data)); // Assuming data.data is the user's availability
+        } else {
+          console.error("Error fetching user availability: ", data.error);
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching user availability: ", error);
+      });
+  };
+
   const formatGroupData = (data: any[][]) => {
     const formatted = {};
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  
+
     data.forEach((dayData, dayIndex) => {
       dayData.forEach((hourData, hourIndex) => {
-        const hourFormatted = hourIndex < 10 ? `0${hourIndex}:00` : `${hourIndex}:00`;
+        const hourFormatted =
+          hourIndex < 10 ? `0${hourIndex}:00` : `${hourIndex}:00`;
         const key = `${days[dayIndex]}-${hourFormatted}`;
         formatted[key] = {
           count: hourData.count,
           users: hourData.users,
-          percentage: hourData.percentage
+          percentage: hourData.percentage,
         };
       });
     });
-  
+
     return formatted;
   };
 
@@ -106,7 +121,10 @@ const EventPage = () => {
         <div className="text-center pt-5 availability-header">
           <h2>{eventDetails.name}</h2>
           <p>{eventDetails.description}</p>
-          <p>To invite people to this event, direct them to <a href={window.location.href}>this link</a></p>
+          <p>
+            To invite people to this event, direct them to{" "}
+            <a href={window.location.href}>this link</a>
+          </p>
         </div>
         <div className="availability-container">
           <div className="text-center availability-section">
@@ -117,6 +135,7 @@ const EventPage = () => {
               eventId={eventId}
               url={url}
               primaryDate={eventDetails.primaryDate}
+              userAvailability={userAvailability}
             />
           </div>
           <div className="text-center availability-section">

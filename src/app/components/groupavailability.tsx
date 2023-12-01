@@ -22,7 +22,6 @@ const GroupAvailability: React.FC<GroupAvailabilityProps> = ({
   primaryDate,
 }) => {
   const [days, setDays] = useState([]);
-  console.log(groupData["Fri-09:00"]);
 
   useEffect(() => {
     if (primaryDate && typeof window !== "undefined") {
@@ -84,7 +83,6 @@ const GroupAvailability: React.FC<GroupAvailabilityProps> = ({
       let monthDay = `${month} ${day}`;
       weekDays.push(monthDay);
     }
-    console.log(weekDays);
     return weekDays;
   }
 
