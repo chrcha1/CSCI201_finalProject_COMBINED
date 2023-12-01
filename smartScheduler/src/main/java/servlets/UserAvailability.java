@@ -28,10 +28,9 @@ public class UserAvailability extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+        response.setHeader("Access-Control-Allow-Origin", "*");
     	response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     	response.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    	response.setHeader("Access-Control-Allow-Credentials", "true");
 
         JsonObject jsonResponse = new JsonObject();
         String userId = request.getParameter("userId");
@@ -62,21 +61,32 @@ public class UserAvailability extends HttpServlet {
 
     // Update user availability
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+    	response.setHeader("Access-Control-Allow-Origin", "*");
     	response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     	response.setHeader("Access-Control-Allow-Headers", "Content-Type");
     	
-        String userId = request.getParameter("userId");
-        String eventId = request.getParameter("eventId");
-        String availability = request.getParameter("availability");
+    	StringBuilder jsonBuilder = new StringBuilder();
+        String line;
+        while ((line = request.getReader().readLine()) != null) {
+            jsonBuilder.append(line);
+        }
+        JsonObject jsonObject = JsonParser.parseString(jsonBuilder.toString()).getAsJsonObject();
+
+        String userId = jsonObject.get("userId").getAsString();
+        String eventId = jsonObject.get("eventId").getAsString();
 
         try (Connection conn = DatabaseUtil.getConnection();
-             PreparedStatement ps = conn.prepareStatement("UPDATE participants SET availability = ? WHERE user_id = ? AND event_id = ?")) {
+        	PreparedStatement ps = conn.prepareStatement("INSERT INTO participants (user_id, event_id, availability) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE availability = ?")) {
 
-            JsonObject jsonAvailability = JsonParser.parseString(availability).getAsJsonObject();
-            ps.setString(1, jsonAvailability.toString());
-            ps.setString(2, userId);
-            ps.setString(3, eventId);
+        	JsonArray availability = jsonObject.get("availability").getAsJsonArray();
+        	ps.setString(1, userId);
+            ps.setString(2, eventId);
+            ps.setString(3, availability.toString());
+            ps.setString(4, availability.toString());
+            
+            System.out.println(availability.toString());
+            System.out.println(userId);
+            System.out.println(eventId);
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected > 0) {
@@ -102,4 +112,16 @@ public class UserAvailability extends HttpServlet {
 
         return weekAvailability;
     }
+    
+    @Override
+	protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	    setAccessControlHeaders(resp);
+	    resp.setStatus(HttpServletResponse.SC_OK);
+	}
+
+	private void setAccessControlHeaders(HttpServletResponse resp) {
+		resp.setHeader("Access-Control-Allow-Origin", "*");
+	    resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+	    resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
+	}
 }
