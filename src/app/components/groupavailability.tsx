@@ -25,6 +25,8 @@ const GroupAvailability: React.FC<GroupAvailabilityProps> = ({ groupData, primar
     return maxCounts.length > 0 ? Math.max(...maxCounts) : 0;
   };
 
+  console.log(`Max Count: ${getMaxUsersCount()}`);
+
   //making it red for testing
   const getGradientStyle = (userCount: number, maxCount: number) => {
     const minIntensity = 0.0; // Adjust this value as needed
@@ -34,7 +36,10 @@ const GroupAvailability: React.FC<GroupAvailabilityProps> = ({ groupData, primar
     const blueComponent = 88; // B component of the color #435A58
 
     const intensity =
-      maxCount > 0 ? (userCount / maxCount) * 0.8 + minIntensity : minIntensity;
+      maxCount > 0 ? (userCount / maxCount) * 0.8 + minIntensity : 0.0;
+  
+
+    console.log(`Intensity: ${(userCount / maxCount) * 0.8 + minIntensity}`);
 
     const backgroundColor = `rgba(
           ${redComponent},

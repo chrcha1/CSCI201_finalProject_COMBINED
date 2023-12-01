@@ -2,7 +2,6 @@ package servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -15,12 +14,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import util.DatabaseUtil;
+
 @WebServlet("/GetCombinedAvailability")
 public class GetCombinedAvailability extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	
     public GetCombinedAvailability() {
         super();
     }
+    
     @Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
@@ -33,7 +36,7 @@ public class GetCombinedAvailability extends HttpServlet {
         int totalParticipants = 0;
 
         // Step 1: Fetch Availabilities
-        try (Connection connection = DriverManager.getConnection("database URL", "username", "password");
+        try (Connection connection = DatabaseUtil.getConnection();
              PreparedStatement statement = connection.prepareStatement("SELECT u.username, p.availability FROM participants p JOIN users u ON p.user_id = u.id WHERE p.event_id = ?;")) {
 
             statement.setString(1, eventId);

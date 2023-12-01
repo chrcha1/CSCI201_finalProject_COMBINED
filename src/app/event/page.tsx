@@ -68,6 +68,8 @@ const EventPage = () => {
     fetch(`${url}/GetCombinedAvailability?eventId=${eventId}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log("Raw group data: ");
+        console.log(data);
         const formattedData = formatGroupData(data);
         console.log("Group data: ");
         console.log(formattedData);
@@ -78,32 +80,18 @@ const EventPage = () => {
       });
   };
 
-  const formatGroupData = (data: ParticipantsAvailabilityData) => {
-    const formatted: { [key: string]: string[] } = {};
-    const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-
-    // Initialize formatted object with empty arrays
-    days.forEach((day, dayIndex) => {
-      for (let hour = 0; hour < 24; hour++) {
-        const hourFormatted = hour < 10 ? `0${hour}:00` : `${hour}:00`;
-        const key = `${day}-${hourFormatted}`;
-        formatted[key] = [];
-      }
-    });
-
-    // Aggregate usernames by timeslot
-    data.forEach((participant) => {
-      participant.availability.forEach((dayAvailability, dayIndex) => {
-        dayAvailability.forEach((isAvailable, hour) => {
-          if (isAvailable) {
-            const hourFormatted = hour < 10 ? `0${hour}:00` : `${hour}:00`;
-            const key = `${days[dayIndex]}-${hourFormatted}`;
-            formatted[key].push(participant.username);
-          }
-        });
+  const formatGroupData = (data: any[][]) => {
+    const formatted = {};
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  
+    data.forEach((dayData, dayIndex) => {
+      dayData.forEach((hourData, hourIndex) => {
+        const hourFormatted = hourIndex < 10 ? `0${hourIndex}:00` : `${hourIndex}:00`;
+        const key = `${days[dayIndex]}-${hourFormatted}`;
+        formatted[key] = hourData.users;
       });
     });
-
+  
     return formatted;
   };
 
@@ -130,7 +118,10 @@ const EventPage = () => {
           <div className="text-center availability-section">
             <h3>Group Availability</h3>
             <p>Mouseover to see who is available</p>
-            <GroupAvailability groupData={groupData} primaryDate={eventDetails.primaryDate} />
+            <GroupAvailability
+              groupData={groupData}
+              primaryDate={eventDetails.primaryDate}
+            />
           </div>
         </div>
       </div>
