@@ -33,5 +33,7 @@ CREATE TABLE SmartScheduler.participants (
     availability JSON,
     FOREIGN KEY (user_id) REFERENCES SmartScheduler.users(id),
     FOREIGN KEY (event_id) REFERENCES SmartScheduler.events(id)
+    ADD UNIQUE KEY unique_user_event (user_id, event_id)
 );
+
 
