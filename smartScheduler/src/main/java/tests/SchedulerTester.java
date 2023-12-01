@@ -1,4 +1,4 @@
-package smartScheduler;
+package tests;
 
 import java.sql.Timestamp;
 import java.time.Instant;
