@@ -5,9 +5,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
-
-import java.util.*;
 
 public class Event {
     private String eventId;
@@ -79,7 +78,7 @@ public class Event {
 
     /**
      * Calculate the best time slots for the event based on participant availability.
-     * 
+     *
      * @param users List of users to consider for the event
      * @return List of sorted time slots based on availability
      */

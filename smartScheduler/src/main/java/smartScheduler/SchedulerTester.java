@@ -79,9 +79,9 @@ public class SchedulerTester {
             System.out.println("Day: " + dayIndex + ", Hour: " + hourIndex);
         });
 
-        for (int i = 0; i < event1.finalmatrix.length; i++) {
+        for (int[] element : event1.finalmatrix) {
             for (int j = 0; j < event1.finalmatrix[0].length; j++) {
-                System.out.print(event1.finalmatrix[i][j] + " ");
+                System.out.print(element[j] + " ");
             }
             System.out.println();
         }
