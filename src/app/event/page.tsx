@@ -27,15 +27,18 @@ const EventPage = () => {
     if (typeof window !== 'undefined') {
       const queryParams = new URLSearchParams(window.location.search);
       const eventId = queryParams.get("eventId");
+      const domain = `${window.location.protocol}//${window.location.hostname}`;
+      const port = 8080;
+      const url = `${domain}:${port}/smartScheduler/`;
       if (eventId) {
-        fetchEventDetails(eventId);
-        fetchGroupData(eventId);
+        fetchEventDetails(eventId, url);
+        fetchGroupData(eventId, url);
       }
     }
   }, []);
 
-  const fetchEventDetails = (eventId: string) => {
-    fetch(`/EventServlet?eventId=${eventId}`)
+  const fetchEventDetails = (eventId: string, url: string) => {
+    fetch(`${url}/EventServlet?eventId=${eventId}`)
       .then((response) => response.json())
       .then((data) => {
         setEventDetails({
@@ -49,8 +52,8 @@ const EventPage = () => {
       });
   };
 
-  const fetchGroupData = (eventId: string) => {
-    fetch(`/GetCombinedAvailability?eventId=${eventId}`)
+  const fetchGroupData = (eventId: string, url: string) => {
+    fetch(`${url}/GetCombinedAvailability?eventId=${eventId}`)
       .then((response) => response.json())
       .then((data) => {
         const formattedData = formatGroupData(data);
