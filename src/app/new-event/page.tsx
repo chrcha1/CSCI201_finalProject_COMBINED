@@ -51,7 +51,7 @@ export default function newEvent() {
       if (data.message === "Event created successfully.") {
           console.log(data.eventId);
           let eventId = data.eventId;
-          setUrl("localhost:3000/event?eventId=" + eventId);
+          setUrl("localhost:3000/events?eventId=" + eventId);
           console.log(url);
       }
 

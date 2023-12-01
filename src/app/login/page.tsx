@@ -120,12 +120,9 @@ export default function Login() {
                   </div>
                   <div className="row text-center pt-4 d-flex align-items-center justify-content-center">
                     <div className="col-12 text-center">
-                      <button className="btn login-button w-100" type="submit">
+                      <button className="btn login-button w-100 mb-5" type="submit">
                         Login
                       </button>
-                      <div className="text-end pt-2 pb-5 forgot-password-text">
-                        Forgot Password?
-                      </div>
                       {errorMessage && (
                         <div className="error-message">{errorMessage}</div>
                       )}

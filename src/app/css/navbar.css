@@ -6,3 +6,9 @@
 .header-text {
     font-size: 2.5em;
 }
+
+.logout {
+    font-size: 1.25rem;
+    text-underline: none;
+    color: white;
+}

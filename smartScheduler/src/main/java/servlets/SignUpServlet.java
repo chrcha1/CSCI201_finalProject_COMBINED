@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.UUID;
 
 import util.DatabaseUtil;
 import util.ValidationUtil;
@@ -64,27 +65,23 @@ public class SignUpServlet extends HttpServlet {
             }
 
             // Insert new user
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO users (username, password) VALUES (?, ?)");
-            ps.setString(1, username);
-            ps.setString(2, password);
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO users (id, username, password) VALUES (?, ?, ?)");
+
+            String newUserId = UUID.randomUUID().toString();
+            ps.setString(1, newUserId);
+            ps.setString(2, username);
+            ps.setString(3, password);
             int result = ps.executeUpdate();
 
             if (result > 0) {
-                ResultSet rs = ps.getGeneratedKeys();
-                if (rs.next()) {
-                    String newUserId = rs.getString("id");
-                    HttpSession session = request.getSession();
-                    session.setAttribute("user", username);
-                    session.setAttribute("userId", newUserId);
-
-                    jsonResponse.addProperty("success", true);
-                    jsonResponse.addProperty("userId", newUserId);
-                    jsonResponse.addProperty("redirect", "/new-event");
-                } else {
-                    jsonResponse.addProperty("error", "User registration failed.");
-                }
+                HttpSession session = request.getSession();
+                session.setAttribute("user", username);
+                session.setAttribute("userId", newUserId);
+                jsonResponse.addProperty("success", true);
+                jsonResponse.addProperty("userId", newUserId);
+                jsonResponse.addProperty("redirect", "/new-event");
             } else {
-                jsonResponse.addProperty("error", "Invalid username or password.");
+                jsonResponse.addProperty("error", "User registration failed.");
             }
         } catch (SQLException e) {
         	jsonResponse.addProperty("error", "Database connection problem: " + e.getMessage());
