@@ -17,7 +17,9 @@ export default function Signup() {
     }
 
     try {
-      const response = await fetch("http://127.0.0.1:8080/smartScheduler/SignUpServlet", {
+      let domain = window.location.origin;
+      let port = 8080;
+      const response = await fetch(`${domain}:${port}/smartScheduler/SignUpServlet`, {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

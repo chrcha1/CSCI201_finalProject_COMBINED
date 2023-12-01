@@ -69,12 +69,20 @@ public class SignUpServlet extends HttpServlet {
             int result = ps.executeUpdate();
 
             if (result > 0) {
-            	HttpSession session = request.getSession();
-            	session.setAttribute("user", username);
-                jsonResponse.addProperty("success", true);
-                jsonResponse.addProperty("redirect", "/");
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    int newUserId = rs.getInt(1);
+                    HttpSession session = request.getSession();
+                    session.setAttribute("user", username);
+                    session.setAttribute("userId", newUserId);
+
+                    jsonResponse.addProperty("success", true);
+                    jsonResponse.addProperty("redirect", "/");
+                } else {
+                    jsonResponse.addProperty("error", "User registration failed.");
+                }
             } else {
-            	jsonResponse.addProperty("error", "Invalid username or password.");
+                jsonResponse.addProperty("error", "Invalid username or password.");
             }
         } catch (SQLException e) {
         	jsonResponse.addProperty("error", "Database connection problem: " + e.getMessage());

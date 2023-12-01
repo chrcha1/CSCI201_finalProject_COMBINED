@@ -1,8 +1,44 @@
+"use client";
+import React, { useState, useContext } from "react";
 import Navbar from "@/app/components/navbar";
-import "../css/events.css";
 import Datepicker from "@/app/components/datepicker";
+import DateSelectionContext from "@/app/components/dateselectioncontext";
+
+import "../css/events.css";
 
 export default function newEvent() {
+  const { selectedDates } = useContext(DateSelectionContext);
+  const [eventName, setEventName] = useState("New Event Name");
+
+  const handleEventCreation = async (event: any) => {
+    event.preventDefault();
+
+    const createdBy = "user123"; // Need to create a servlet to get user id
+
+    try {
+      let domain = window.location.origin;
+      let port = 8080;
+      const response = await fetch(
+        `${domain}:${port}/EventCreationServlet`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: `name=${encodeURIComponent(
+            eventName
+          )}&description=${encodeURIComponent(
+            JSON.stringify(selectedDates.values().next().value)
+          )}&createdBy=${encodeURIComponent(createdBy)}`,
+        }
+      );
+
+      const data = await response.text();
+
+      console.log(data); // Still need to handle the data
+    } catch (error) {
+      console.log("Failed to create event: ", error);
+    }
+  };
+
   // Function to generate time options from 12:00 AM to 11:00 PM
   const generateTimeOptions = () => {
     const options = [];
@@ -21,7 +57,7 @@ export default function newEvent() {
     <main>
       <Navbar />
       <div className={"event-main"}>
-        <div className={"container"}>
+        <form className={"container"} onSubmit={handleEventCreation}>
           <div
             className={"row d-flex justify-content-center align-items-center"}
           >
@@ -45,7 +81,9 @@ export default function newEvent() {
                     fontWeight: 600,
                     backgroundColor: "rgb(232, 241, 241)",
                   }}
-                  defaultValue="New Event Name"
+                  value={eventName}
+                  onChange={(e) => setEventName(e.target.value)}
+                  placeholder="New Event Name"
                 />
               </div>
             </div>
@@ -124,13 +162,14 @@ export default function newEvent() {
                     fontWeight: 400,
                     color: "435A58",
                   }}
+                  type="submit"
                 >
                   CREATE EVENT
                 </button>
               </div>
             </div>
           </div>
-        </div>
+        </form>
       </div>
     </main>
   );

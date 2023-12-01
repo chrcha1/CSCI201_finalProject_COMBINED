@@ -56,6 +56,9 @@ public class LoginServlet extends HttpServlet {
             if (rs.next()) {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", username);
+                int userId = rs.getInt("id");
+                session.setAttribute("userId", userId);
+
                 jsonResponse.addProperty("success", true);
                 jsonResponse.addProperty("redirect", "/");
                 
