@@ -32,6 +32,9 @@ public class LoginServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	response.setContentType("application/json");
     	response.setCharacterEncoding("UTF-8");
+    	response.setHeader("Access-Control-Allow-Origin", "*");
+    	response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    	response.setHeader("Access-Control-Allow-Headers", "Content-Type");
 		
 		String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -53,8 +56,11 @@ public class LoginServlet extends HttpServlet {
             if (rs.next()) {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", username);
+                int userId = rs.getInt("id");
+                session.setAttribute("userId", userId);
+
                 jsonResponse.addProperty("success", true);
-                jsonResponse.addProperty("redirect", "html/home.html");
+                jsonResponse.addProperty("redirect", "/");
                 
             } else {
                 jsonResponse.addProperty("error", "Invalid username or password.");

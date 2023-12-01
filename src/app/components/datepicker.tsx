@@ -9,7 +9,7 @@ type CalendarDay = {
   isToday: boolean;
 };
 
-export default function DatepickerComponent() {
+export default function DatepickerComponent( props : any) {
   const { selectedDates, setSelectedDates } = useContext(DateSelectionContext);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarDays, setCalendarDays] = useState<CalendarDay[]>([]);
@@ -100,6 +100,7 @@ export default function DatepickerComponent() {
       const dateString = date.toISOString();
       newSelectedDates.add(dateString);
       console.log(newSelectedDates);
+      props.onSelectedDatesChange(newSelectedDates);
       return newSelectedDates;
     });
   };

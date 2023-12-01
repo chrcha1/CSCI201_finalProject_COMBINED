@@ -32,6 +32,9 @@ public class SignUpServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	response.setContentType("application/json");
     	response.setCharacterEncoding("UTF-8");
+    	response.setHeader("Access-Control-Allow-Origin", "*");
+    	response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    	response.setHeader("Access-Control-Allow-Headers", "Content-Type");
 		
     	String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -66,12 +69,20 @@ public class SignUpServlet extends HttpServlet {
             int result = ps.executeUpdate();
 
             if (result > 0) {
-            	HttpSession session = request.getSession();
-            	session.setAttribute("user", username);
-                jsonResponse.addProperty("success", true);
-                jsonResponse.addProperty("redirect", "html/home.html");
+                ResultSet rs = ps.getGeneratedKeys();
+                if (rs.next()) {
+                    int newUserId = rs.getInt(1);
+                    HttpSession session = request.getSession();
+                    session.setAttribute("user", username);
+                    session.setAttribute("userId", newUserId);
+
+                    jsonResponse.addProperty("success", true);
+                    jsonResponse.addProperty("redirect", "/");
+                } else {
+                    jsonResponse.addProperty("error", "User registration failed.");
+                }
             } else {
-            	jsonResponse.addProperty("error", "Invalid username or password.");
+                jsonResponse.addProperty("error", "Invalid username or password.");
             }
         } catch (SQLException e) {
         	jsonResponse.addProperty("error", "Database connection problem: " + e.getMessage());

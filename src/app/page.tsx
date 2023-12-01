@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import "../css/login.css";
+import "./css/login.css";
 
 export default function Login() {
   const [username, setUsername] = useState("");
