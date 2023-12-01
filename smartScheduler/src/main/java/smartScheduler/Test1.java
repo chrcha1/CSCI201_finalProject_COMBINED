@@ -1,5 +1,11 @@
 package smartScheduler;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+
+import models.Event;
+import models.User;
+
 /*
 
 public static void main(String[] args) {
@@ -64,12 +70,12 @@ public class Test1 {
 
     public static void main(String[] args) {
         // Create users
-        User user1 = new User("1", "Alice", "hashedPwd1");
-        User user2 = new User("2", "Bob", "hashedPwd2");
-        User user3 = new User("3", "Charlie", "hashedPwd3");
+        User user1 = new User("1", "Alice", "hashedPwd1", Timestamp.from(Instant.now()));
+        User user2 = new User("2", "Bob", "hashedPwd2", Timestamp.from(Instant.now()));
+        User user3 = new User("3", "Charlie", "hashedPwd3", Timestamp.from(Instant.now()));
 
         // Create an event
-        Event event = new Event("E1", "Team Meeting", "Weekly Meeting");
+        Event event = new Event("E1", "Team Meeting", "Weekly Meeting", "1");
 
         // Add users to the event
         event.addParticipant(user1);

@@ -1,5 +1,7 @@
 package smartScheduler;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 
 import models.Event;
@@ -9,11 +11,11 @@ public class SchedulerTester {
 
     public static void main(String[] args) {
         // Create users
-        User user1 = new User("1", "Alice", "hashedPwd1");
-        User user2 = new User("2", "Bob", "hashedPwd2");
-        User user3 = new User("3", "Charlie", "hashedPwd3");
-        User user4 = new User("4", "David", "hashedPwd4");
-        User user5 = new User("5", "Eve", "hashedPwd5");
+        User user1 = new User("1", "Alice", "hashedPwd1", Timestamp.from(Instant.now()));
+        User user2 = new User("2", "Bob", "hashedPwd2", Timestamp.from(Instant.now()));
+        User user3 = new User("3", "Charlie", "hashedPwd3", Timestamp.from(Instant.now()));
+        User user4 = new User("4", "David", "hashedPwd4", Timestamp.from(Instant.now()));
+        User user5 = new User("5", "Eve", "hashedPwd5", Timestamp.from(Instant.now()));
 
         // Create more events
         Event event1 = new Event("E1", "Team Meeting", "Weekly Meeting", "1");
