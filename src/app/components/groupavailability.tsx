@@ -20,7 +20,7 @@ const GroupAvailability: React.FC<GroupAvailabilityProps> = ({ groupData }) => {
 
   //making it red for testing
   const getGradientStyle = (userCount: number, maxCount: number) => {
-    const minIntensity = 0.2; // Adjust this value as needed
+    const minIntensity = 0.0; // Adjust this value as needed
 
     const redComponent = 67; // R component of the color #435A58
     const greenComponent = 90; // G component of the color #435A58
