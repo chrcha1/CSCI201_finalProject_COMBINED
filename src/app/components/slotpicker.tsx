@@ -231,8 +231,8 @@ const EventCalendar = ({
                 const dayOfWeek = dateToDayOfWeek(day, year);
                 const formattedTime = convertTo24HourFormat(time);
                 const key = `${dayOfWeek}-${formattedTime}`;
-                console.log(`Key: ${key}`)
-                const isSelected = selectedSlots.has(key);
+                // console.log(`Key: ${key}`)
+                const isSelected = selectedSlots.has(key) || selectedSlots.has(`${day}-${time}`);
                 return (
                   <div
                     key={`${day}-${time}`}
