@@ -1,17 +1,26 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../css/slotpicker.css";
 
 const EventCalendar = ({
   userId,
   eventId,
   url,
+  primaryDate,
 }: {
   userId: string;
   eventId: string;
   url: string;
+  primaryDate: string;
 }) => {
   const [selectedSlots, setSelectedSlots] = useState(new Set());
+  const [days, setDays] = useState([]);
+
+  useEffect(() => {
+    if (primaryDate && typeof window !== "undefined") {
+      setDays(calculateDays());
+    }
+  }, [primaryDate]);
 
   const updateAvailability = async () => {
     const availabilityMatrix = createAvailabilityMatrix();
@@ -65,7 +74,7 @@ const EventCalendar = ({
 
     selectedSlots.forEach((slot) => {
       const [monthDay, time] = slot.split("-");
-      const date = new Date(`${monthDay} ${selectedDay.split("-")[0]}`); // Combine with year from selectedday
+      const date = new Date(`${monthDay} ${primaryDate.split("-")[0]}`); // Get year from primary date
       const dayOfWeek = date.getDay(); // Get day of week as number (0=Sunday, 6=Saturday)
 
       const timeIndex = timeMapping[time];
@@ -79,9 +88,8 @@ const EventCalendar = ({
     return availabilityMatrix;
   };
 
-  let selectedDay = "2023-11-15T08:00:00.000Z"; // demo value
-  function calculateDays(selectedDay: any) {
-    let selectedDate = new Date(selectedDay);
+  function calculateDays() {
+    let selectedDate = new Date(primaryDate); // Example: 2023-12-29T08:00:00.000Z
     const abbreviatedMonths = [
       "Jan",
       "Feb",
@@ -106,6 +114,8 @@ const EventCalendar = ({
       let monthDay = `${month} ${day}`;
       weekDays.push(monthDay);
     }
+    console.log("Week Days: ");
+    console.log(weekDays);
     return weekDays;
   }
 
@@ -123,8 +133,6 @@ const EventCalendar = ({
       return newSelectedSlots;
     });
   };
-
-  let days = calculateDays(selectedDay);
 
   const renderCalendarGrid = () => {
     const times = [

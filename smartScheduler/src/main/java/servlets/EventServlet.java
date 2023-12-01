@@ -46,6 +46,7 @@ public class EventServlet extends HttpServlet {
                 jsonResponse.addProperty("name", rs.getString("name"));
                 jsonResponse.addProperty("description", rs.getString("description"));
                 jsonResponse.addProperty("createdBy", rs.getString("created_by"));
+                jsonResponse.addProperty("primaryDate", rs.getString("primary_date"));
             }
 
             response.getWriter().write(jsonResponse.toString());

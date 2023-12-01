@@ -21,6 +21,7 @@ const EventPage = () => {
     name: "",
     description: "",
     createdBy: "",
+    primaryDate: "",
   });
   const [eventId, setEventId] = useState("");
   const [userId, setUserId] = useState("");
@@ -55,6 +56,7 @@ const EventPage = () => {
           name: data.name || "Unnamed Event",
           description: data.description || "No description provided.",
           createdBy: data.createdBy || "Unknown",
+          primaryDate: data.primaryDate || "",
         });
       })
       .catch((error) => {
@@ -118,7 +120,12 @@ const EventPage = () => {
           <div className="text-center availability-section">
             <h3>Your Availability</h3>
             <p>Click time slots to select your availability</p>
-            <Slotpicker userId={userId} eventId={eventId} url={url} />
+            <Slotpicker
+              userId={userId}
+              eventId={eventId}
+              url={url}
+              primaryDate={eventDetails.primaryDate}
+            />
           </div>
           <div className="text-center availability-section">
             <h3>Group Availability</h3>
