@@ -89,15 +89,15 @@ const EventCalendar = ({
       Sat: 6,
     };
     const timeMapping: { [key: string]: number } = {
-      "9:00 AM": 9,
-      "10:00 AM": 10,
-      "11:00 AM": 11,
-      "12:00 PM": 12,
-      "1:00 PM": 13,
-      "2:00 PM": 14,
-      "3:00 PM": 15,
-      "4:00 PM": 16,
-      "5:00 PM": 17,
+      "9:00": 9,
+      "10:00": 10,
+      "11:00": 11,
+      "12:00": 12,
+      "13:00": 13,
+      "14:00": 14,
+      "15:00": 15,
+      "16:00": 16,
+      "17:00": 17,
     };
 
     let availabilityMatrix = Array(7)
@@ -232,12 +232,12 @@ const EventCalendar = ({
                 const formattedTime = convertTo24HourFormat(time);
                 const key = `${dayOfWeek}-${formattedTime}`;
                 // console.log(`Key: ${key}`)
-                const isSelected = selectedSlots.has(key) || selectedSlots.has(`${day}-${time}`);
+                const isSelected = selectedSlots.has(key);
                 return (
                   <div
                     key={`${day}-${time}`}
                     className={`time-slot ${isSelected ? "selected" : ""}`}
-                    onClick={() => handleTimeSlotClick(day, time)}
+                    onClick={() => handleTimeSlotClick(dayOfWeek, formattedTime)}
                   >
                     &nbsp;
                   </div>
