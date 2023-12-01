@@ -69,10 +69,10 @@ const GroupAvailability: React.FC<GroupAvailabilityProps> = ({ groupData }) => {
   }
 
   let days = calculateDays(selectedDay);
-  console.log(days);
+  // console.log(days);
 
   const renderCalendarGrid = () => {
-    console.log(days);
+    // console.log(days);
     const times = [
       "9:00 AM",
       "10:00 AM",

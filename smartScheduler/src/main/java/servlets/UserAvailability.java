@@ -83,10 +83,6 @@ public class UserAvailability extends HttpServlet {
             ps.setString(2, eventId);
             ps.setString(3, availability.toString());
             ps.setString(4, availability.toString());
-            
-            System.out.println(availability.toString());
-            System.out.println(userId);
-            System.out.println(eventId);
 
             int rowsAffected = ps.executeUpdate();
             if (rowsAffected > 0) {

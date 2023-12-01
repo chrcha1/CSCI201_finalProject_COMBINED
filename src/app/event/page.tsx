@@ -34,17 +34,23 @@ const EventPage = () => {
       const domain = `${window.location.protocol}//${window.location.hostname}`;
       const port = 8080;
       setUrl(`${domain}:${port}/smartScheduler`);
-      if (eventId) {
-        fetchEventDetails(eventId);
-        fetchGroupData(eventId);
-      }
     }
   }, []);
+
+  useEffect(() => {
+    if (eventId) {
+      console.log("Updated Event ID: ", eventId);
+      fetchEventDetails(eventId);
+      fetchGroupData(eventId);
+    }
+  }, [eventId]);
 
   const fetchEventDetails = (eventId: string) => {
     fetch(`${url}/EventServlet?eventId=${eventId}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log("Event details: ");
+        console.log(data);
         setEventDetails({
           name: data.name || "Unnamed Event",
           description: data.description || "No description provided.",
@@ -61,6 +67,8 @@ const EventPage = () => {
       .then((response) => response.json())
       .then((data) => {
         const formattedData = formatGroupData(data);
+        console.log("Group data: ");
+        console.log(formattedData);
         setGroupData(formattedData);
       })
       .catch((error) => {
