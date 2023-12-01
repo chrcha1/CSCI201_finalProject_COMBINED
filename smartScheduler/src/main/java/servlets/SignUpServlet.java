@@ -71,13 +71,13 @@ public class SignUpServlet extends HttpServlet {
             if (result > 0) {
                 ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) {
-                    int newUserId = rs.getInt(1);
+                    String newUserId = rs.getString("id");
                     HttpSession session = request.getSession();
                     session.setAttribute("user", username);
                     session.setAttribute("userId", newUserId);
 
                     jsonResponse.addProperty("success", true);
-                    jsonResponse.addProperty("redirect", "/");
+                    jsonResponse.addProperty("redirect", "/new-event");
                 } else {
                     jsonResponse.addProperty("error", "User registration failed.");
                 }
@@ -90,6 +90,18 @@ public class SignUpServlet extends HttpServlet {
         	response.getWriter().write(jsonResponse.toString());
         }
     }
+	
+	@Override
+	protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	    setAccessControlHeaders(resp);
+	    resp.setStatus(HttpServletResponse.SC_OK);
+	}
+
+	private void setAccessControlHeaders(HttpServletResponse resp) {
+	    resp.setHeader("Access-Control-Allow-Origin", "*");
+	    resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+	    resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
+	}
 }
 
 

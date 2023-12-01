@@ -13,8 +13,8 @@ export default function Login() {
 
     // Sending a POST request to the login servlet
     try {
-      let domain = window.location.origin;
-      let port = 8080;
+      const domain = `${window.location.protocol}//${window.location.hostname}`;
+      const port = 8080;
       const response = await fetch(`${domain}:${port}/smartScheduler/LoginServlet`, {
         method: "POST",
         headers: {

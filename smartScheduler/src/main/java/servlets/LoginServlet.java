@@ -38,11 +38,14 @@ public class LoginServlet extends HttpServlet {
 		
 		String username = request.getParameter("username");
         String password = request.getParameter("password");
+        System.out.println(username);
+        System.out.println(password);
         
         JsonObject jsonResponse = new JsonObject();
         
         if (ValidationUtil.isNullOrEmpty(username) || ValidationUtil.isNullOrEmpty(password)) {
             jsonResponse.addProperty("error", "Username and password cannot be empty.");
+            System.out.println("Username or password empty");
             return;
         }
         
@@ -56,19 +59,34 @@ public class LoginServlet extends HttpServlet {
             if (rs.next()) {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", username);
-                int userId = rs.getInt("id");
+                String userId = rs.getString("id");
                 session.setAttribute("userId", userId);
 
                 jsonResponse.addProperty("success", true);
-                jsonResponse.addProperty("redirect", "/");
+                jsonResponse.addProperty("redirect", "/new-event");
+                System.out.println("Successful Login");
                 
             } else {
                 jsonResponse.addProperty("error", "Invalid username or password.");
+                System.out.println("Invalid username or password");
             }
         } catch (SQLException e) {
         	jsonResponse.addProperty("error", "Database connection problem: " + e.getMessage());
+        	System.out.println("Database connection problem: " + e.getMessage());
         } finally {
         	response.getWriter().write(jsonResponse.toString());
         }
     }
+	
+	@Override
+	protected void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	    setAccessControlHeaders(resp);
+	    resp.setStatus(HttpServletResponse.SC_OK);
+	}
+
+	private void setAccessControlHeaders(HttpServletResponse resp) {
+	    resp.setHeader("Access-Control-Allow-Origin", "*");
+	    resp.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+	    resp.setHeader("Access-Control-Allow-Headers", "Content-Type");
+	}
 }

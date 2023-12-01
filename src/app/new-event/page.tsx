@@ -13,27 +13,22 @@ export default function newEvent() {
   const handleEventCreation = async (event: any) => {
     event.preventDefault();
 
-    const createdBy = "user123"; // Need to create a servlet to get user id
-
     try {
       let domain = window.location.origin;
       let port = 8080;
-      const response = await fetch(
-        `${domain}:${port}/EventCreationServlet`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: `name=${encodeURIComponent(
-            eventName
-          )}&description=${encodeURIComponent(
-            JSON.stringify(selectedDates.values().next().value)
-          )}&createdBy=${encodeURIComponent(createdBy)}`,
-        }
-      );
+      const response = await fetch(`${domain}:${port}/EventCreationServlet`, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `name=${encodeURIComponent(
+          eventName
+        )}&description=${encodeURIComponent(
+          JSON.stringify(selectedDates.values().next().value)
+        )}`,
+      });
 
       const data = await response.text();
 
-      console.log(data); // Still need to handle the data
+      console.log(data); // TODO: handle the response and display a success / error message for the user
     } catch (error) {
       console.log("Failed to create event: ", error);
     }
@@ -107,18 +102,20 @@ export default function newEvent() {
               <div className={"mb-5"}>What date will work?</div>
               <Datepicker />
             </div>
-              <div className={"new-event-create-event-button-wrapper row pt-5 w-50"}>
-                <button
-                  className={"new-event-create-event-button px-5 py-1 mb-5"}
-                  style={{
-                    fontWeight: 400,
-                    color: "435A58",
-                  }}
-                  type="submit"
-                >
-                  CREATE EVENT
-                </button>
-              </div>
+            <div
+              className={"new-event-create-event-button-wrapper row pt-5 w-50"}
+            >
+              <button
+                className={"new-event-create-event-button px-5 py-1 mb-5"}
+                style={{
+                  fontWeight: 400,
+                  color: "435A58",
+                }}
+                type="submit"
+              >
+                CREATE EVENT
+              </button>
+            </div>
           </div>
         </form>
       </div>
