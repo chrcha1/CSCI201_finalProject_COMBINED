@@ -23,7 +23,7 @@ const EventPage = () => {
     if (typeof window !== "undefined") {
       const queryParams = new URLSearchParams(window.location.search);
       setEventId(queryParams.get("eventId") || "");
-      setUserId(localStorage.getItem("userId") || "a6735d27-3888-4445-9b11-fd577b485c43");
+      setUserId(localStorage.getItem("userId") || "ecdf33e8-62a7-48d8-8e50-c6765be15b6b");
       const domain = `${window.location.protocol}//${window.location.hostname}`;
       const port = 8080;
       setUrl(`${domain}:${port}/smartScheduler`);
