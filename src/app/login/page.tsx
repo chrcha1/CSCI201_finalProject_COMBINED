@@ -123,6 +123,7 @@ export default function Login() {
                       <button className="btn login-button w-100 mb-5" type="submit">
                         Login
                       </button>
+                      <a href = "/sign-up" className="text-end pt-2 forgot-password-text">Sign Up</a>
                       {errorMessage && (
                         <div className="error-message">{errorMessage}</div>
                       )}

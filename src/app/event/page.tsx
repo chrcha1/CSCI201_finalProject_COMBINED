@@ -8,7 +8,7 @@ import GroupAvailability from "@/app/components/groupavailability";
 
 const EventPage = () => {
   const [groupData, setGroupData] = useState({});
-  const [userAvailability, setUserAvailability] = useState({});
+  const [userAvailability, setUserAvailability] = useState([]);
   const [eventDetails, setEventDetails] = useState({
     name: "",
     description: "",
@@ -23,7 +23,7 @@ const EventPage = () => {
     if (typeof window !== "undefined") {
       const queryParams = new URLSearchParams(window.location.search);
       setEventId(queryParams.get("eventId") || "");
-      setUserId(localStorage.getItem("userId") || "");
+      setUserId(localStorage.getItem("userId") || "a6735d27-3888-4445-9b11-fd577b485c43");
       const domain = `${window.location.protocol}//${window.location.hostname}`;
       const port = 8080;
       setUrl(`${domain}:${port}/smartScheduler`);

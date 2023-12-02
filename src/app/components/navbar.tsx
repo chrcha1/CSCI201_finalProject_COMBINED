@@ -1,4 +1,5 @@
 "use client";
+import { redirect } from 'next/navigation';
 import '../css/navbar.css'
 import React, { useState, useEffect } from "react";
 
@@ -8,7 +9,12 @@ export default function Navbar() {
     useEffect(() => {
         setDomain(`${window.location.protocol}//${window.location.hostname}`);
     }, []);
-    
+
+    const handleLogout = async (event) => {
+        localStorage.removeItem('userId');
+        window.location.href = '/login';
+    }
+
     let port = 8080;
     return (
         <div className={"navbar-main"}>
@@ -17,7 +23,7 @@ export default function Navbar() {
                     Smart Scheduler
                 </div>
                 <div className={"col-4 text-end"}>
-                    <a href={`${domain}:${port}/smartScheduler/LogoutServlet`} className={"logout"}>Log Out</a>
+                    <button onClick={handleLogout} className={"logout bg-none bg-transparent"}>Log Out</button>
                 </div>
             </div>
         </div>

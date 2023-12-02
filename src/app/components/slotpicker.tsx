@@ -34,10 +34,9 @@ const EventCalendar = ({
   const updateSelectedSlotsFromAvailability = (availabilityMatrix: any) => {
     const newSelectedSlots = new Set();
     const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    // Updated times array to use 24-hour format
     const times = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
   
-    console.log(availabilityMatrix.length);
+    // console.log(availabilityMatrix.length);
     for (let dayIndex = 0; dayIndex < Math.min(availabilityMatrix.length, 7); dayIndex++) {
       for (let hourIndex = 9; hourIndex <= 17; hourIndex++) {
         if (availabilityMatrix[dayIndex][hourIndex]) {
@@ -56,6 +55,8 @@ const EventCalendar = ({
 
   const updateAvailability = async () => {
     const availabilityMatrix = createAvailabilityMatrix();
+    console.log("Updated Availability Matrix: ");
+    console.log(availabilityMatrix);
     const payload = {
       userId: userId,
       eventId: eventId,
@@ -73,20 +74,21 @@ const EventCalendar = ({
       const response = await fetch(`${url}/UserAvailability`, requestOptions);
       const data = await response.text();
       console.log(data);
+      window.location.reload(); // Refresh the page
     } catch (error) {
       console.error("Error updating availability: ", error);
     }
   };
 
   const createAvailabilityMatrix = () => {
-    const dayMapping: { [key: string]: number } = {
-      Sun: 0,
-      Mon: 1,
-      Tue: 2,
-      Wed: 3,
-      Thu: 4,
-      Fri: 5,
-      Sat: 6,
+    const dateMapping: { [key: string]: number } = {
+      "Sun": 0,
+      "Mon": 1,
+      "Tue": 2,
+      "Wed": 3,
+      "Thu": 4,
+      "Fri": 5,
+      "Sat": 6,
     };
     const timeMapping: { [key: string]: number } = {
       "9:00": 9,
@@ -105,13 +107,12 @@ const EventCalendar = ({
       .map(() => Array(24).fill(false));
 
     selectedSlots.forEach((slot) => {
-      const [monthDay, time] = slot.split("-");
-      const date = new Date(`${monthDay} ${primaryDate.split("-")[0]}`); // Get year from primary date
-      const dayOfWeek = date.getDay(); // Get day of week as number (0=Sunday, 6=Saturday)
+      const [dayOfWeek, time] = slot.split("-");
+      const dayOfWeekIdx = dateMapping[dayOfWeek]; // Get day of week as number (0=Sunday, 6=Saturday)
 
       const timeIndex = timeMapping[time];
-      if (dayOfWeek !== undefined && timeIndex !== undefined) {
-        availabilityMatrix[dayOfWeek][timeIndex] = true;
+      if (dayOfWeekIdx !== undefined && timeIndex !== undefined) {
+        availabilityMatrix[dayOfWeekIdx][timeIndex] = true;
       }
     });
 
